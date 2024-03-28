@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite</title>
+
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        user-select: none;
+      }
+      #canvas {
+        text-align: center;
+      }
+  </style>
+
+</head>
+<body>
+
+  <div id="canvas">
+    <div id="text1">infinite</div>
+    <div id="text2">infinite</div>
+  </div>
+
+  <script>
+    function main() {
+      const text1 = document.getElementById('text1');
+      const text2 = document.getElementById('text2');
+
+      const base = 1.05;
+      const min = 10.0;
+      const max = 90.0;
+      const speed = 1.5;
+
+      function render(position) {
+        const size = Math.round(Math.pow(base, position));
+        const color = 255 - Math.round(255 * (size/max)); 
+      
+        text1.style.fontSize = `${size}px`;
+        text1.style.color = `rgb(${color}, ${color}, ${color})`;
+
+        text2.style.fontSize = `${max - size}px`;
+        text2.style.color = `rgb(${255-color}, ${255-color}, ${255-color})`;
+      }
+
+      const fps = 60;
+
+      let position = min;
+      let lastTimestamp = document.timeline.currentTime;
+
+      function tick(timestamp) {
+        const deltaTime = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+
+        position += speed * (deltaTime / 1000) * fps;
+
+        if (position > max) {
+          position = min;
+        }
+
+        render(position);
+
+        requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    document.addEventListener('DOMContentLoaded', main);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+# 25. Allods Online Addons (1/10)
+
+_14-08-2010_ _Juan Mellado_
+
+Los "_addons_" son extensiones que permiten añadir opciones nuevas a un programa, o modificar el comportamiento de las ya existentes. Hoy en día es bastante normal que todo tipo de aplicaciones los soporten, incluidos los juegos. Y supongo que ya estamos tan acostumbrados a disponer de esta posibilidad que lo consideramos como un hecho ordinario, aunque creo que a mi siempre me seguirá pareciendo algo extraordinario eso de poder meternos en la piel de un programa para modificarlo casi a nuestro antojo de una forma limpia y elegante.
+
+_Allods Online_ es un MMORPG gratuito de ambientación fantástico-medieval con la mecánica y elementos habituales de este tipo de juegos. Un par de facciones enfrentadas, unas cuantas razas por facción, y varias clases con árboles de talentos para tanqueo, sanación y daño. Misiones de "_grinding_" y "_farming_", algunas cuantas instancias para ir de "_party_" o "_raid_", profesiones, reputaciones, y casa de subastas.
+
+Los desarrolladores son rusos, y eso se nota en algunos aspectos del juego, hay muchos NPCs con nombres como "_Boris_" o "_Andrei_", e incluso una región que se llama "_Siveria_". Aunque lo realmente curioso es que tienen la política de publicar las nuevas versiones primero en Rusia y luego en el resto de Europa y América. Es decir, que jugamos con un par de parches por debajo de la versión oficial rusa. Es más, por lo que he podido entender, la posibilidad de usar _addons_ es algo que se ha añadido en el parche actual, o quizás en el anterior. Perfecto para mis propósitos.
+
+El juego, como ya he comentado, es gratuito, y esto quiere decir que se puede crear una cuenta, un personaje, y jugar todo lo que se quiera, sin restricciones. Nuevamente perfecto para mis propósitos. Eso sí, existe la posibilidad de adquirir objetos que hacen la vida más fácil, como por ejemplo una bolsa con más huecos, pagando una pequeña cantidad de dinero. Pero es algo completamente opcional. Aunque hay otra serie de objetos que también se venden y sirven para potenciar el daño y la sanación, hasta un 100%, que mucha gente considera algo necesario, ya que si no el juego se hace muy difícil y el "_leveling_" (hasta el nivel 42 actualmente) muy lento.
+
+Desgraciadamente el juego no está traducido al español, y creo que no existen planes para hacerlo en un futuro inmediato. De hecho, la documentación de los _addons_ ni siquiera está traducida al inglés. Y es que la única información técnica oficial disponible es la que se incluye junto con la descarga del mismo juego, ¡y está en ruso!. Dentro del directorio de instalación del juego, en el directorio ```data\Mods\Docs```. Son unas páginas HTML con una breve guía de construcción e instalación, así como una descripción de todas y cada una de las funciones disponibles del API. Ya que aunque todavía no lo he comentado, los _addons_ se escriben utilizando Lua, uno de los lenguajes de _scripts_ más utilizados para este tipo de tareas.
+
+Bueno, y llegado este punto, es hora de abrir un traductor de ruso y ponerse a leer un rato.

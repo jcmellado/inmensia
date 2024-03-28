@@ -1,0 +1,45 @@
+# 1. Spring Cloud Netflix (1)
+
+_19-06-2018_ _Juan Mellado_
+
+Todas las empresas desarrollan una o varias actividades que representan su fuente principal de ingresos. Y esos ingresos se dividen en partidas de dinero que deben dedicarse a gastos e inversiones. Para las empresas de gran tamaño una de esas partidas habitualmente se destina al mantenimiento de sus sistemas de información. Sistemas que tradicionalmente han gestionado en una infraestructura propia. Sus propias máquinas, sus propias aplicaciones, sus propios equipos, sus propios problemas.
+
+Para algunas empresas la información es parte fundamental de su actividad. Mantener esa información en un entorno propio les resulta algo natural. No obstante, se plantea la cuestión de si realmente necesitan hacerse responsable de gestionar absolutamente todos sus sistemas. No sólo los de misión crítica, sino los de uso más común. El esfuerzo humano, material y económico necesario para mantener en funcionamiento toda una infraestructura propia puede llegar a ser bastante elevado.
+
+Desde hace más de dos décadas, gigantes como Amazon, Google y Microsoft comenzaron a ofrecer sus infraestructuras para que pudieran ser explotadas por otras empresas. Una oferta que se ha materializado en distintos servicios. Servicios de almacenamiento, servicios de computación, servicios de aplicaciones, etc La idea es que las empresas no tengan que invertir en sistemas virtuales, distribuidos, replicados, escalables, tolerantes a fallos y con alta disponibilidad. Conceptos técnicos todos ellos que no se encuentran habitualmente dentro del dominio de su negocio.
+
+Aunque el paradigma ha ido evolucionando con los años, por lo general se acepta que si un sistema o información no se encuentra alojado dentro de una infraestructura propia se dice que está en la nube. Si se almacena un archivo, como una fotografía, en un servidor ajeno se dice que está en la nube. Si se crea un fichero, como un documento, a través de una aplicación alojada en un servidor ajeno se dice que se usa un servicio en la nube. Si se ejecuta una aplicación propia en un servidor ajeno se dice que usa la infraestructura de la nube. Y en general, simplificando bastante, si se realiza cualquier acción que implica el acceso a un servidor ajeno a través de una red se considera que se está trabajando en la nube. Entendiendo en todo caso que dicho acceso se realiza normalmente a través de Internet, e independientemente de que algunas empresas mantengan grandes infraestructuras propias que denominan nubes privadas.
+
+Una de las razones que motivó la aparición de la nube fue la necesidad de disponer de una gran capacidad de cómputo por parte de las empresas que empezaban a ofertar servicios para millones de potenciales clientes conectados a un mismo tiempo. Las empresas necesitaban arquitecturas con una alta escalabilidad horizontal bajo demanda utilizando las capacidades de una infraestructura externa ofrecida por algún proveedor. Las soluciones que surgieron de esa necesidad originó la creación de arquitecturas que se han popularizado hasta convertirse en el marco de referencia para el desarrollo de aplicaciones hoy en día. Evolucionando desde aplicaciones monolíticas basadas en base de datos relaciones hasta arquitecturas de microservicios y base de datos NoSQL.
+
+Una de las compañías que tuvo que acometer la tarea de desarrollar una arquitectura en la nube fue Netflix, el popular servicio de streaming de series, películas y documentales. El código fuente de los servicios básicos que componen su plataforma desarrollada en Java se encuentra disponible de forma abierta bajo licencia Apache 2.0. Sus soluciones se desarrollaron en una época temprana y con unas necesidades muy concretas para la infraestructura de Amazon sobre la que se ejecutaba, por lo que no reflejan el estado actual del desarrollo de microservicios ejecutados sobre contenedores. No obstante, la plataforma abierta de Netflix supone un punto de entrada muy interesante para los desarrolladores que quieran conocer el principio de funcionamiento de este tipo de arquitecturas.
+
+Netflix Open Source Software (Netflix OSS) es el conjunto de librerías y herramientas desarrollados por Netflix que posibilita la ejecución de servicios en la nube. Proporciona una serie de componentes básicos que exponen todas las características esperadas de un entorno en la nube.
+
+Spring Cloud es un framework desarrollado en Java por Spring que expone los patrones comunes implementados por los sistemas distribuidos. Proporciona tanto una serie de capas de abstracción a través de interfaces genéricas como una serie de implementaciones concretas de dichas interfaces con librerías propias o de terceros.
+
+Spring Cloud Netflix es una implementación de las interfaces propuestas por Spring Cloud utilizando las librerías de Netflix OSS y Spring Boot.
+
+El objetivo de todos estos frameworks es que los desarrolladores puedan montar un sistema de servicios distribuidos ejecutándose sobre una o más máquinas. Permiten a los desarrolladores centrarse en la lógica de negocio y no en los detalles de la infraestructura necesaria para la ejecución de los servicios. Entendiendo por servicio una aplicación propia, preferentemente estructurada en microservicios. Es decir, dividida en componentes que realizan una única tarea dentro de un dominio específico y que pueden ser invocados por el resto de servicios independientemente del lenguaje de programación en el que se encuentren implementados.
+
+En la práctica, de cara a explotar un conjunto de servicios, se consideran necesarias, o al menos deseables, una serie de características. Estas características tienen como propósito facilitar la configuración, despliegue, comunicación y monitorización de dichos servicios. El enfoque de Spring Cloud Netflix al respecto es que nos responsabilicemos de tener una aplicación distinta arrancada, o varias instancias de las mismas, para cubrir cada una de estas características. Además de responsabilizarnos de que nuestras aplicaciones se comuniquen con ellas para obtener provecho de dichas características. Es decir, somos responsables de todo el software, tanto de infraestructura como de nuestros propios servicios. Spring Cloud Netflix proporciona las aplicaciones necesarias para el servidor y las librerías necesarias para que nuestros servicios se comuniquen con ellas.
+
+Algunas de las características cubiertas por Spring Cloud Netflix son las siguientes:
+
+- **Configuración**. Cuando se levanta un servicio es habitual que necesite una serie de parámetros de configuración locales propios. La cuestión no es tanto que estos parámetros se distribuyan como parte del servicio, sino que se puedan establecer y modificar, incluso en tiempo de ejecución, para facilitar la explotación del sistema.
+
+  Spring Cloud proporciona un servidor de configuración propio que denomina **Spring Cloud Config**. Y Netflix OSS por su parte proporciona **Archaius**, su propio servidor de configuración. Utilizar uno u otro es indistinto, Spring Cloud Netflix actúa como puente presentando a las aplicaciones una misma interface para ambos.
+
+- **Descubrimiento**. En un sistema distribuido se debe conocer el número de instancias levantadas de un servicio, y un servicio debe poder invocar una instancia de otro servicio independientemente de donde se encuentre ejecutándose.
+
+  Netflix OSS proporciona **Eureka**, un servidor de descubrimiento de servicios. Cuando un servicio se levanta lo notifica a Eureka, que lleva el registro de los servicios levantados y permite que los servicios puedan invocarse los unos a los otros a través de su registro.
+
+- **Enrutamiento**. Los servicios propios de las aplicaciones normalmente son expuestos públicamente a través de determinadas rutas. Rutas que no deben venir impuestas por la infraestructura donde se encuentren en ejecución.
+
+  Netflix OSS proporciona **Zuul**, un servidor que, entre otras muchas cosas, permite definir las rutas en las que los servicios son publicados. Cuando un servicio se invoca, Zuul resuelve la petición redirigiéndola a alguno de los servicios registrados en Eureka.
+
+- **Monitorización**. En un sistema distribuido con múltiples servicios sobre múltiples máquinas es importante disponer de herramientas que muestren el estado en tiempo real de todos ellos.
+
+  Netflix OSS proporciona **Turbine**, una aplicación cliente que muestra en un cuadro de mando el estado de distintas métricas. Se puede configurar fácilmente para que muestre el estado de los distintos servicios registrados en Eureka. Aunque técnicamente es un agregador de streams de Server-Sent Event (SSE), por lo que es bastante abierto.
+
+Por último, comentar que hoy en día el enfoque de Spring Cloud Netflix, que obliga a los desarrolladores a conocer todos los detalles del funcionamiento del servidor y ligar sus aplicaciones con un framework concreto, ha evolucionado hacia arquitecturas en las que los desarrolladores no tienen que responsabilizarse del software del servidor ni añadir dependencias de terceros en las aplicaciones propias, permitiendo centrarse exclusivamente en la lógica de negocio.

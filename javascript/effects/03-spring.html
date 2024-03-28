@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elastic</title>
+
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        user-select: none;
+      }
+      #canvas {
+        text-align: center;
+        font-size: 100px;
+      }
+  </style>
+
+</head>
+<body>
+
+  <div id="canvas">
+    <div id="text">elastic</div>
+  </div>
+
+  <script>
+    function main() {
+      const text = document.getElementById('text');
+
+      const base = 1.05;
+      const min = 10.0;
+      const max = 90.0;
+      const maxSize = 100;
+
+      function render(position) {
+        const spacing = Math.round(Math.pow(base, position));
+        const size = Math.round(maxSize - spacing);
+        const green = Math.round(192 * (spacing/max)); 
+      
+        text.style.fontSize = `${size}px`;
+        text.style.letterSpacing = `${spacing}px`;
+        text.style.color = `rgb(0, ${green}, 0)`;
+      }
+
+      const fps = 60;
+
+      let position = min;
+      let speed = 1.5;
+      let lastTimestamp = document.timeline.currentTime;
+
+      function tick(timestamp) {
+        const deltaTime = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+
+        position += speed * (deltaTime / 1000) * fps;
+
+        if (position < min) {
+          position = min;
+          speed = -speed;
+        }
+        if (position > max) {
+          position = max;
+          speed = -speed;
+        }
+
+        render(position);
+
+        requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    document.addEventListener('DOMContentLoaded', main);
+  </script>
+
+</body>
+</html>

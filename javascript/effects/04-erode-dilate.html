@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erode-Dilate</title>
+
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        user-select: none;
+      }
+      #container {
+        text-align: center;
+      }
+      canvas {
+        width: 250px;
+        height: 250px;
+      }
+  </style>
+
+</head>
+<body>
+
+  <div id="container">
+    <canvas id="canvasErode"></canvas>
+    <canvas id="canvas"></canvas>
+    <canvas id="canvasDilate"></canvas>
+  </div>
+
+<script>
+  
+  function main() {
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const FONTS = ['Arial', 'Verdana', 'Helvetica', 'Courier'];
+    const COLORS = ['#B7C68B', '#DED29E', '#B3A580', '#685642'];
+
+    const PlainImage = function(data, width, height){
+      this.data = data || [];
+      this.width = width || 0;
+      this.height = height || 0;
+    };
+
+    function createImage(imageSrc, imageDst){
+      const src = imageSrc.data;
+      const dst = imageDst.data;
+      const len = src.length;
+        
+      for (let i = 0, j = 0; i !== len; ++ i, j += 4){
+        dst[j] = dst[j + 1] = dst[j + 2] = src[i];
+        dst[j + 3] = 255;
+      }
+
+      imageDst.width = imageSrc.width;
+      imageDst.height = imageSrc.height;
+
+      return imageDst;
+    };
+
+    function applyKernel(imageSrc, imageDst, initial, fn){
+      const src = imageSrc.data;
+      const dst = imageDst.data;
+      const len = imageSrc.data.length;
+      const width = imageSrc.width;
+      const height = imageSrc.height;
+
+      const offsets = [-width - 1, -width, -width + 1, -1, 0, 1, width - 1, width, width + 1];
+      
+      let pos = len - width - 2;
+
+      let i = height - 2;
+      while(i --){
+
+        let j = width - 2;
+        while(j --){
+          let value = initial;
+        
+          let k = offsets.length;
+          while(k --){
+            value = fn(value, src[pos + offsets[k]]);
+          }
+        
+          dst[pos --] = value;
+        }
+        
+        pos -= 2;
+      }
+
+      dst[len - 1] = undefined;
+
+      imageDst.width = imageSrc.width;
+      imageDst.height = imageSrc.height;
+    
+      return imageDst;
+    };
+
+    function erode(imageSrc, imageDst){
+      return applyKernel(imageSrc, imageDst, 255, Math.min);
+    };
+
+    function dilate(imageSrc, imageDst){
+      return applyKernel(imageSrc, imageDst, 0, Math.max);
+    };
+
+    function grayscale(imageSrc, imageDst){
+      const src = imageSrc.data;
+      const dst = imageDst.data;
+      const len = src.length;
+
+      for (let i = 0, j = 0; i !== len; i += 4){
+        dst[j ++] = 255 - (src[i] * 0.299 + src[i + 1] * 0.587 + src[i + 2] * 0.114) | 0;
+      }
+    
+      imageDst.width = imageSrc.width;
+      imageDst.height = imageSrc.height;
+    
+      return imageDst;
+    };
+
+    function random(limit){
+      return Math.min(Math.floor(Math.random() * limit), limit - 1);
+    };
+
+    function drawRandomChars(canvas, context){
+      const width = parseInt(canvas.width);
+      const height = parseInt(canvas.height);
+    
+      for (let i = 0; i < 20; ++ i){
+        const x = -15 + ((i % 5) * (width / 5)) + random(width/5);
+        const y = 25 + ((i / 5) * (height / 5)) + random(height/5);
+        const font = FONTS[random(FONTS.length)];
+        const color = COLORS[random(COLORS.length)];
+        const text = CHARS.charAt(random(CHARS.length));
+
+        context.font = `800 48px ${font}`;
+        context.fillStyle = color;
+        context.fillText(text, x, y);
+      }
+    };
+
+    function drawRandomDots(canvas, context){
+      const width = parseInt(canvas.width);
+      const height = parseInt(canvas.height);
+    
+      for (let i = 0; i < 100; ++ i){
+        const x = Math.floor(random(width));
+        const y = Math.floor(random(height));
+        const color = COLORS[random(COLORS.length) ];
+        
+        context.fillStyle = color;
+        context.fillRect(x, y, 2, 2);
+      }
+    };
+
+    function paint(canvas, context){
+      context.fillStyle = '#F4F0CB';
+      context.fillRect(0, 0, parseInt(canvas.width), parseInt(canvas.height));
+    
+      drawRandomChars(canvas, context);
+      drawRandomDots(canvas, context);
+    
+      return context.getImageData(0, 0, parseInt(canvas.width), parseInt(canvas.height));
+    };
+
+    const canvas = document.getElementById('canvas');
+    const canvasErode = document.getElementById('canvasErode');
+    const canvasDilate = document.getElementById('canvasDilate');
+
+    const context = canvas.getContext('2d', {willReadFrequently: true});
+    const contextErode = canvasErode.getContext('2d');
+    const contextDilate = canvasDilate.getContext('2d');
+
+    const imageErode = contextErode.getImageData(0, 0, parseInt(canvasErode.width), parseInt(canvasErode.height));
+    const imageDilate = contextDilate.getImageData(0, 0, parseInt(canvasDilate.width), parseInt(canvasDilate.height));
+
+    const greyed = new PlainImage();
+    const eroded = new PlainImage();
+    const dilated = new PlainImage();
+
+    function render(){
+      const image = paint(canvas, context);
+    
+      grayscale(image, greyed);
+      erode(greyed, eroded);
+      dilate(greyed, dilated);
+
+      contextErode.putImageData(createImage(eroded, imageErode), 0, 0);
+      contextDilate.putImageData(createImage(dilated, imageDilate), 0, 0);
+    };
+
+    const maxLapsed = 2000;
+
+    let lastTimestamp = document.timeline.currentTime;
+    let lapsed = 0;
+
+    function tick(timestamp) {
+      const deltaTime = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+
+      lapsed += deltaTime;
+
+      if (lapsed > maxLapsed) {
+        lapsed = Math.min(lapsed - maxLapsed, maxLapsed);        
+        
+        render();
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    render();
+
+    requestAnimationFrame(tick);
+  }
+
+  document.addEventListener('DOMContentLoaded', main);
+</script>
+
+</body>
+</html>
